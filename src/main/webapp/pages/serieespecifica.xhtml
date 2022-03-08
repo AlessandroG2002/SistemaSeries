@@ -1,0 +1,137 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	template="../WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+	
+	<div style="
+	background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('/Series/img-serie?nome=#{serieEspecificaController.entity.id}.png');
+	background-size: cover;
+	background-position: center;
+	width: 100%;
+	height: 250px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	border-radius: 10px;
+	">
+		<h1 style="
+		margin: auto;
+		text-transform: uppercase;
+		color: #d8d8d8;
+		text-align: center;
+		">
+			#{serieEspecificaController.entity.titulo}
+		</h1>
+		
+		<h3 style="
+		margin: auto;
+		text-transform: uppercase;
+		color: #d8d8d8;
+		text-align: center;
+		margin: 0;
+		">
+		EP: #{serieEspecificaController.entity.quantCapitulos} | TEMPORADA: #{serieEspecificaController.entity.quantTemporada}
+		</h3>
+	</div>
+	
+	<div style="
+	width: 100%;
+	background-color: #bfbfbf;
+	padding: 10px;
+	margin-top: 5px;
+	border-radius: 10px; 
+	text-align: center;
+	">
+	#{serieEspecificaController.entity.descricao}
+	</div>
+	
+	<div style="
+	justify-content: space-between;
+	display: flex;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	font-size: 20px;
+	">
+		<div>
+				<h:form>
+						<h:panelGroup>
+							<div class="ui-inputgroup">
+									<p:commandButton value="Favoritar"
+													icon="pi pi-heart"
+													styleClass="ui-button-warning"
+													actionListener="#{editarContaController.favoritarSerie}"
+													process="@this"
+													rendered="#{editarContaController.entity.seriesFavoritas.contains(serieEspecificaController.entity) == false}">
+									</p:commandButton>
+									<p:commandButton value="Desfavoritar"
+													icon="pi pi-times-circle"
+													styleClass="ui-button-warning"
+													actionListener="#{editarContaController.desfavoritarSerie}"
+													process="@this"
+													rendered="#{editarContaController.entity.seriesFavoritas.contains(serieEspecificaController.entity) == true}">
+									</p:commandButton>
+							</div>
+						</h:panelGroup>
+				</h:form>
+	    </div>
+		
+		<div>
+			<i class="pi pi-star-o" />
+			#{serieEspecificaController.ratingSerie()}
+		</div>
+	</div>
+	
+	<div style="
+	justify-content: space-between;
+	display: flex;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	">
+		<div>
+			<h:form>
+					<h:panelGroup>
+						<div class="ui-inputgroup">
+								<p:commandButton value="Avaliações"
+												icon="pi pi-comments"
+												styleClass="ui-button-warning"
+												actionListener="#{serieEspecificaController.abrirAvaliacaoListing}"
+												process="@this">
+								</p:commandButton>
+						</div>
+					</h:panelGroup>
+			</h:form>
+	     </div>
+	     
+	     <div>
+			<h:form>
+					<h:panelGroup>
+						<div class="ui-inputgroup">
+								<p:commandButton value="Avaliar"
+												icon="pi pi-comment"
+												styleClass="ui-button-warning"
+												actionListener="#{avaliacaoSerieController.abrirAvaliacao}"
+												process="@this">
+								</p:commandButton>
+						</div>
+					</h:panelGroup>
+			</h:form>
+	     </div>
+    </div>
+     
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+		<p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+		<p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" />
+	</p:confirmDialog>
+     
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+        <p:graphicImage name="/image/loader.gif" height="300" width="400"/>
+    </p:dialog>
+	</ui:define>
+	
+</ui:composition>

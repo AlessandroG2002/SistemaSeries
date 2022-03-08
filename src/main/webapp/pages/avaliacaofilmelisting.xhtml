@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" >
+	
+<h:head>
+	<title>Consulta de Avaliações</title>
+</h:head>
+
+<h:body>	
+
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			closable="false" resizable="false" showHeader="false">
+			<p:graphicImage name="/images/processando.gif" />
+		</p:dialog>
+
+		<h:form>
+			<p:growl id="growl" globalOnly="false" />
+			<p:panel id="panel">
+				
+				 <div class="ui-g ui-fluid">
+					<div class="ui-g-12">
+					
+						<div class="card card-w-title" >
+
+							<p:dataTable id="dtListagem" 
+								var="entity" rowIndexVar="row"
+								paginator="false"
+								reflow="true"
+								value="#{avaliacaoFilmeListing.list}">
+								<p:column headerText="Foto de Perfil" style="
+								width: 50px; 
+								height: 50px; 
+								background-image:url('/Series/img-usuario?nome=#{entity.usuario.id}.png');
+	        					background-size: cover;
+	        					background-position: center;">
+								</p:column>
+			
+								<p:column headerText="Usuário">
+									<p:commandLink value="#{entity.usuario.nomeCompleto}"
+										actionListener="#{avaliacaoFilmeListing.selecionarUsuario(entity.usuario)}"
+										process="@this" update="@form"/>
+								</p:column>
+								
+								<p:column headerText="Comentário">
+									<h:outputText value="#{entity.comentario}"/>
+								</p:column>
+								
+								<p:column headerText="Nota">
+									<i class="pi pi-star-o" />
+									<h:outputText value="  #{entity.nota}"/>
+								</p:column>
+								
+								<f:facet name="footer">
+							        Total de #{avaliacaoFilmeListing.list.size()} avaliações.
+							    </f:facet>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+			</p:panel>
+
+		</h:form>
+</h:body>
+</html>

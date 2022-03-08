@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" lang="en">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<h:outputStylesheet library="webjars"
+		name="font-awesome/5.12.0/css/all.min-jsf.css" />
+	<h:outputStylesheet library="webjars"
+		name="font-awesome/5.12.0/css/v4-shims.min-jsf.css" />
+	<h:outputStylesheet name="primeicons/primeicons.css"
+		library="primefaces" />
+	<ui:insert name="head" />
+</h:head>
+
+<h:body>
+		<h:form>
+		<p:growl id="growl" showDetail="false" />
+			<p:panel >
+			
+				<f:facet name="header">
+					<h2>Esqueceu senha</h2>
+				</f:facet>
+			
+				<h:panelGrid columns="3">
+					<p:outputLabel value="Informe o email:"/>
+					<p:inputText value="#{esqueceuSenhaController.email}"/>
+					<p:messages id="messages" closable="true"/>
+				</h:panelGrid>
+				
+				<f:facet name="footer">
+				<h:panelGrid columns="1">
+					<p:commandButton value="Enviar" action="#{esqueceuSenhaController.enviarEmail}" update="messages"/>
+				</h:panelGrid>
+				</f:facet>
+				
+				<h:commandLink style="margin-bottom:0;" styleClass="wdi-red" value="Já recebi meu código." action="recuperarsenha.xhtml?faces-redirect=true"/>
+				
+			</p:panel>
+		</h:form>
+	
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+     	<p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+     	<p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" />
+     </p:confirmDialog>
+
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+        <p:graphicImage name="/image/loader.gif" height="300" width="400"/>
+    </p:dialog>
+
+	<h:outputStylesheet name="layout/style/layout.css" />
+	<h:outputScript name="layout/script/layout.js" />
+</h:body>
+
+</html>

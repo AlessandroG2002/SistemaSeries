@@ -1,0 +1,159 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	template="../WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+	<h:form>
+		<p:growl id="growl" showDetail="false" />
+		<p:panel >
+			<f:facet name="header">
+				<div>
+					<div align="center" style="width: 85%; display: inline-block;">
+						<h1>Cadastro de Filme</h1>
+					</div>
+					<div align="right" style="float: right; position: relative;">
+						<img class="img-responsive"
+					     style="max-width: 80px!important;max-height: 80px!important;"            
+					     src="/Series/img-filme?nome=#{filmeController.entity.id}.png"/>
+					</div>
+				</div>				
+			</f:facet>
+		
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Título:"/>
+				<h:panelGroup>
+					<div class="ui-inputgroup">
+						<p:inputText 
+							style="width:185px"
+							value="#{filmeController.entity.titulo}"/>
+						<p:button icon="pi pi-search"
+							styleClass="ui-button-warning"
+							onclick="PF('dlg').show()" />
+					</div>
+				</h:panelGroup>
+				
+				<p:outputLabel value="Estúdio:"/>
+				<h:panelGroup>
+					<div class="ui-inputgroup">
+						<p:inputText style="width:185px"
+							value="#{filmeController.entity.estudio.nome}" />
+						<p:commandButton icon="pi pi-search"
+							styleClass="ui-button-warning"
+							actionListener="#{filmeController.abrirEstudioListing}">
+							<p:ajax event="dialogReturn"
+								listener="#{filmeController.obterEstudioListing}"
+								update="@form" />
+						</p:commandButton>
+					</div>
+				</h:panelGroup>
+					
+				<p:outputLabel value="Duração:"/>
+				<p:inputMask value="#{filmeController.entity.duracao}" mask="99:99:99"/>
+				
+				<p:outputLabel for="button" value="Lançamento"/>
+                <p:datePicker id="button" value="#{filmeController.entity.lancamento}" showIcon="true"/>
+				
+				<p:outputLabel value="Descrição:"/>
+				<p:inputTextarea rows="6" cols="33" maxlength="255" value="#{filmeController.entity.descricao}"/>
+				
+				<p:outputLabel value="Imagem:"/>
+				<h:form enctype="multipart/form-data" > 
+					
+					<p:fileUpload id="fileUpload"
+								  listener="#{filmeController.upload}" 
+								  mode="advanced" 
+								  update="fileUpload @form"
+								  label="Selecione uma foto ..."
+								  global="false">
+					</p:fileUpload>
+				     <p:growl id="messages" showDetail="true"/>    
+				</h:form>
+
+			</h:panelGrid>
+			
+			<f:facet name="footer">
+				<h:panelGrid columns="3">
+					<p:commandButton value="Salvar"
+						actionListener="#{filmeController.salvar}"
+						process="@form" update="@form"/>
+						
+					<p:commandButton value="Excluir"
+						actionListener="#{filmeController.excluir}"
+						process="@form" update="@form">
+					</p:commandButton>
+						
+					<p:commandButton value="Limpar"
+						actionListener="#{filmeController.limpar}"
+						process="@this" update="@form"/>
+				</h:panelGrid>
+			</f:facet>
+		</p:panel>
+		
+		<p:dialog header="Consulta de Filmes" widgetVar="dlg" 
+				  minHeight="40" 
+				  width="80%" 
+				  showEffect="fade" 
+				  maximizable="true"
+				  modal="true">
+				  
+			 <div class="p-grid ui-fluid">	  
+				<div class="p-col-12 p-md-4">
+	                <div class="ui-inputgroup">
+	                    <p:inputText 
+	                    	id="itFiltro"
+	                    	value="#{filmeController.filtro}"
+	                    	placeholder="Filtro pelo título..."/>
+	                    <p:commandButton 
+	                    	actionListener="#{filmeController.pesquisar}"
+	                    	process="@this itFiltro"
+	                    	update="dataTable"
+	                    	icon="pi pi-search" 
+	                    	styleClass="ui-button-warning"/>
+	                </div>
+	            </div>	
+	        </div> 
+	         
+			<p:dataTable id="dataTable" value="#{filmeController.listaFilme}"
+				var="obj">
+				<p:column headerText="Título">
+					<p:outputLabel value="#{obj.titulo}"/>
+				</p:column>
+				
+				<p:column headerText="Estúdio" >
+					<p:outputLabel value="#{obj.estudio.nome}"/>
+				</p:column>
+				
+				<p:column headerText="Lançamento" >
+					<p:outputLabel value="#{obj.lancamento}"/>
+				</p:column>
+				
+				<p:column headerText="Nota" >
+					<p:outputLabel value="#{obj.rating}"/>
+				</p:column>
+				
+				<p:column headerText="Ação" >
+					<p:commandButton value="Editar"
+						actionListener="#{filmeController.editar(obj.id)}"
+						process="@this" update="@form"/>
+				</p:column>
+				
+			</p:dataTable>
+		</p:dialog>
+		
+	</h:form>
+	
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+     	<p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+     	<p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" />
+     </p:confirmDialog>
+     
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+        <p:graphicImage name="/image/loader.gif" height="300" width="400"/>
+    </p:dialog>
+</ui:define>
+</ui:composition>

@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	template="../WEB-INF/template.xhtml">
+
+<ui:define name="content">
+	<h:form>
+		<p:growl id="growl" showDetail="false" />
+		<p:panel >
+			<f:facet name="header">
+				<h2>Cadastro de Estúdio</h2>
+			</f:facet>
+		
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Nome:"/>
+				<h:panelGroup>
+					<div class="ui-inputgroup">
+						<p:inputText style="width:185px"
+							value="#{estudioController.entity.nome}" />
+						<p:commandButton icon="pi pi-search"
+							styleClass="ui-button-warning"
+							actionListener="#{estudioController.abrirEstudioListing}">
+							<p:ajax event="dialogReturn"
+								listener="#{estudioController.obterEstudioListing}"
+								update="@form" />
+						</p:commandButton>
+					</div>
+				</h:panelGroup>
+				
+				<p:outputLabel value="Data de criação:"/>
+				<p:datePicker id="button" value="#{estudioController.entity.dataCriacao}" showIcon="true"/>
+
+			</h:panelGrid>
+			
+			<f:facet name="footer">
+				<h:panelGrid columns="3">
+					<p:commandButton value="Salvar"
+						actionListener="#{estudioController.salvar}"
+						process="@form" update="@form"/>
+						
+					<p:commandButton value="Excluir"
+						actionListener="#{estudioController.excluir}"
+						process="@form" update="@form">
+					</p:commandButton>
+						
+					<p:commandButton value="Limpar"
+						actionListener="#{estudioController.limpar}"
+						process="@this" update="@form"/>
+				</h:panelGrid>
+			</f:facet>
+		</p:panel>
+
+	</h:form>
+	
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+     	<p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+     	<p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" />
+     </p:confirmDialog>
+     
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+        <p:graphicImage name="/image/loader.gif" height="300" width="400"/>
+    </p:dialog>
+</ui:define>
+</ui:composition>

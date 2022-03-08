@@ -1,0 +1,155 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	template="../WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+	<h:form>
+		<p:growl id="growl" showDetail="false" />
+		<p:panel >
+			<f:facet name="header">
+				<div>
+					<div align="center" style="width: 85%; display: inline-block;">
+						<h1>Cadastro de Usuário</h1>
+					</div>
+					<div align="right" style="float: right; position: relative;">
+						<img class="img-responsive"
+					     style="max-width: 80px!important;max-height: 80px!important;"            
+					     src="/Series/img-usuario?nome=#{usuarioController.entity.id}.png"/>
+					</div>
+				</div>	
+			</f:facet>
+		
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Nome:"/>
+				<h:panelGroup>
+					<div class="ui-inputgroup">
+						<p:inputText
+							style="width:185px"
+							value="#{usuarioController.entity.primeiroNome}"/>
+						<p:button icon="pi pi-search"
+							styleClass="ui-button-warning"
+							onclick="PF('dlg').show()" />
+					</div>
+				</h:panelGroup>
+				
+				<p:outputLabel value="Sobrenome:"/>
+				<p:inputText value="#{usuarioController.entity.sobrenome}"/>
+				
+				<p:outputLabel value="Login:"/>
+				<p:inputText value="#{usuarioController.entity.login}"/>
+
+				<p:outputLabel value="Senha:"/>
+				<p:password id="toggle" value="#{usuarioController.entity.senha}" toggleMask="true" redisplay="true"/>
+				
+				<p:outputLabel value="Perfil de Usuário:"/>
+				<p:selectOneMenu value="#{usuarioController.entity.perfil}">
+					<f:selectItem itemLabel="Selecione..."/>
+					<f:selectItems 
+						value="#{usuarioController.listaPerfil}" 
+						var="obj"
+						itemLabel="#{obj.label}"/>
+				</p:selectOneMenu>
+				
+				<p:outputLabel value="Bio:"/>
+				<p:inputTextarea rows="6" cols="33" value="#{usuarioController.entity.bio}"/>
+				
+				<p:outputLabel value="Imagem:"/>
+				<h:form enctype="multipart/form-data" > 
+					
+					<p:fileUpload id="fileUpload"
+								  listener="#{usuarioController.upload}" 
+								  mode="advanced" 
+								  update="fileUpload @form"
+								  label="Selecione uma foto ..."
+								  global="false">
+					</p:fileUpload>
+				     <p:growl id="messages" showDetail="true"/>    
+				</h:form>
+
+			</h:panelGrid>
+			
+			<f:facet name="footer">
+				<h:panelGrid columns="3">
+					<p:commandButton value="Salvar"
+						actionListener="#{usuarioController.salvar}"
+						process="@form" update="@form"/>
+						
+					<p:commandButton value="Excluir"
+						actionListener="#{usuarioController.excluir}"
+						process="@form" update="@form">
+					</p:commandButton>
+						
+					<p:commandButton value="Limpar"
+						actionListener="#{usuarioController.limpar}"
+						process="@this" update="@form"/>
+				</h:panelGrid>
+			</f:facet>
+		</p:panel>
+		
+		<p:dialog header="Consulta de Usuários" widgetVar="dlg" 
+				  minHeight="40" 
+				  width="80%" 
+				  showEffect="fade" 
+				  maximizable="true"
+				  modal="true">
+				  
+			 <div class="p-grid ui-fluid">	  
+				<div class="p-col-12 p-md-4">
+	                <div class="ui-inputgroup">
+	                    <p:inputText 
+	                    	id="itFiltro"
+	                    	value="#{usuarioController.filtro}"
+	                    	placeholder="Filtro pelo primeiro nome..."/>
+	                    <p:commandButton 
+	                    	actionListener="#{usuarioController.pesquisar}"
+	                    	process="@this itFiltro"
+	                    	update="dataTable"
+	                    	icon="pi pi-search" 
+	                    	styleClass="ui-button-warning"/>
+	                </div>
+	            </div>	
+	        </div> 
+	         
+			<p:dataTable id="dataTable" value="#{usuarioController.listaUsuario}"
+				var="obj">
+				<p:column headerText="Primeiro Nome">
+					<p:outputLabel value="#{obj.primeiroNome}"/>
+				</p:column>
+				<p:column headerText="Sobrenome" >
+					<p:outputLabel value="#{obj.sobrenome}"/>
+				</p:column>
+				
+				<p:column headerText="Login" >
+					<p:outputLabel value="#{obj.login}"/>
+				</p:column>
+				
+				<p:column headerText="Senha" >
+					<p:outputLabel value="#{obj.senha}"/>
+				</p:column>
+				
+				<p:column headerText="Ação" >
+					<p:commandButton value="Editar"
+						actionListener="#{usuarioController.editar(obj.id)}"
+						process="@this" update="@form"/>
+				</p:column>
+				
+			</p:dataTable>
+		</p:dialog>
+		
+	</h:form>
+	
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+     	<p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+     	<p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" />
+     </p:confirmDialog>
+     
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+        <p:graphicImage name="/image/loader.gif" height="300" width="400"/>
+    </p:dialog>
+</ui:define>
+</ui:composition>

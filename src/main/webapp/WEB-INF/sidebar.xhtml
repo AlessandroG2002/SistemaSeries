@@ -1,0 +1,91 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ph="http://primefaces.org/harmony">
+
+	<div class="layout-sidebar">
+		<ul id="layout-menu" class="layout-menu">
+
+			<div
+				style="margin: 10px; display: flex; flex-direction: column; text-align: center; color: #d8d8d8;">
+
+				<div
+					style="
+	        	border: 4px solid; 
+	        	width: 100px; 
+	        	height: 100px; 
+	        	display: flex; 
+	        	border-radius: 100px;
+	        	margin: auto;
+	        	background-image:url('/Series/img-usuario?nome=#{templateController.usuarioLogado.id}.png');
+	        	background-size: cover;
+	        	background-position: center;
+	        	">
+				</div>
+
+				<p:commandLink style="
+							margin: 0; 
+							color: #d8d8d8;
+							font-size: 35px;
+							font-weight: bold;"
+							value="#{templateController.usuarioLogado.primeiroNome}"
+							actionListener="#{usuarioController.selecionarUsuario(templateController.usuarioLogado)}"/>
+
+			</div>
+
+			<li><h:link outcome="/pages/usuario"
+					rendered="#{templateController.usuarioLogado.perfil.id == 1}">
+					<i class="pi pi-user-edit" />
+					<span>Cadastro de Usuário</span>
+				</h:link></li>
+
+			<li><h:link outcome="/pages/serie"
+					rendered="#{templateController.usuarioLogado.perfil.id == 1}">
+					<i class="pi pi-video" />
+					<span>Cadastro de Série</span>
+				</h:link></li>
+
+			<li><h:link outcome="/pages/filme"
+					rendered="#{templateController.usuarioLogado.perfil.id == 1}">
+					<i class="pi pi-video" />
+					<span>Cadastro de Filme</span>
+				</h:link></li>
+
+			<li><h:link outcome="/pages/estudio"
+					rendered="#{templateController.usuarioLogado.perfil.id == 1}">
+					<i class="pi pi-home" />
+					<span>Cadastro de Estúdio</span>
+				</h:link></li>
+
+			<li><h:link outcome="/pages/usuarios">
+					<i class="pi pi-users" />
+					<span>Usuários</span>
+				</h:link></li>
+
+			<li><h:link outcome="/pages/series">
+					<i class="pi pi-globe" />
+					<span>Séries</span>
+				</h:link></li>
+
+			<li><h:link outcome="/pages/filmes">
+					<i class="pi pi-globe" />
+					<span>Filmes</span>
+				</h:link></li>
+
+			<li><h:link outcome="/pages/editarconta">
+					<i class="pi pi-user-edit" />
+					<span>Editar Conta</span>
+				</h:link></li>
+
+			<li><p:commandLink
+					rendered="#{templateController.usuarioLogado != null}"
+					styleClass="topbar-link" process="@this"
+					action="#{templateController.encerrarSessao}">
+					<i class="pi pi-sign-out" />
+					<span>Sair</span>
+				</p:commandLink></li>
+		</ul>
+	</div>
+</ui:composition>

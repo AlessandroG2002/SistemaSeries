@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	template="../WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+	<h:form>
+		<p:growl id="growl" showDetail="false" />
+			<div>
+				<div align="center" style="width: 85%; display: inline-block;">
+					<h1>Usuários</h1>
+				</div>
+			</div>	
+				  
+			 <div class="p-grid ui-fluid">	  
+				<div class="p-col-12 p-md-4">
+	                <div class="ui-inputgroup">
+	                    <p:inputText 
+	                    	id="itFiltro"
+	                    	value="#{usuarioController.filtro}"
+	                    	placeholder="Filtro pelo nome..."/>
+	                    <p:commandButton 
+	                    	actionListener="#{usuarioController.pesquisar}"
+	                    	process="@this itFiltro"
+	                    	update="dataTable"
+	                    	icon="pi pi-search" 
+	                    	styleClass="ui-button-warning"/>
+	                </div>
+	            </div>	
+	        </div> 
+	         
+			<p:dataTable id="dataTable" value="#{usuarioController.listaUsuario}"
+				var="obj">
+				
+				<p:column style="
+					background-image:url('/Series/img-usuario?nome=#{obj.id}.png');
+	        		background-size: cover;
+	        		background-position: center;
+	        		height: 200px;
+				"
+				rendered="#{obj.id != null}">
+				</p:column>
+				
+				<p:column
+				rendered="#{obj.id != null}">
+					<p:commandLink value="#{obj.nomeCompleto}"
+					actionListener="#{usuarioController.selecionarUsuario(obj)}"/>
+				</p:column>
+				
+			</p:dataTable>
+		
+	</h:form>
+	
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+     	<p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+     	<p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" />
+     </p:confirmDialog>
+     
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+        <p:graphicImage name="/image/loader.gif" height="300" width="400"/>
+    </p:dialog>
+	</ui:define>
+	
+</ui:composition>

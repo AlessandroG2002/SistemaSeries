@@ -1,0 +1,323 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<div
+			style="
+			background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('/Series/img-usuario?nome=#{perfilController.entity.id}.png');
+			background-size: cover;
+			background-position: center;
+			width: 100%;
+			height: 300px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			border-radius: 10px;
+			color: #d8d8d8;
+			">
+			<div
+				style="
+	        	border: 4px solid; 
+	        	width: 150px; 
+	        	height: 150px; 
+	        	display: flex;
+	        	border-radius: 100px; 
+	        	margin: auto;
+	        	background-image:url('/Series/img-usuario?nome=#{perfilController.entity.id}.png');
+	        	background-size: cover;
+	        	background-position: center;
+	        	">
+			</div>
+			<h1 style="margin: auto; text-align: center;">
+				#{perfilController.entity.nomeCompleto}</h1>
+			<p style="text-align: center; font-style: italic;">
+				"#{perfilController.entity.bio}"</p>
+		</div>
+		
+		<div style="
+		justify-content: space-between;
+		display: flex;
+		margin-top: 5px;
+		margin-bottom: 5px;
+		font-size: 20px;
+		">
+			<div>
+				<h:form>
+						<h:panelGroup>
+							<div class="ui-inputgroup">
+									<p:commandButton value="Seguir"
+													icon="pi pi-user-plus"
+													styleClass="ui-button-warning"
+													actionListener="#{perfilController.seguir}"
+													process="@this"
+													rendered="#{templateController.usuarioLogado != perfilController.entity and perfilController.entity.seguidores.contains(templateController.usuarioLogado) == false}">
+									</p:commandButton>
+									<p:commandButton value="Deixar de seguir"
+													icon="pi pi-user-minus"
+													styleClass="ui-button-warning"
+													actionListener="#{perfilController.deixarDeSeguir}"
+													process="@this"
+													rendered="#{templateController.usuarioLogado != perfilController.entity and perfilController.entity.seguidores.contains(templateController.usuarioLogado) == true}">
+									</p:commandButton>
+							</div>
+						</h:panelGroup>
+				</h:form>
+	     	</div>
+			
+			<div>
+				<h:form>
+					Seguidores: #{perfilController.entity.seguidores.size()} | Seguindo: #{perfilController.entity.seguindo.size()}
+				</h:form>
+			</div>
+		</div>
+
+		<div style="width: 100%; background-color: #bfbfbf; padding: 10px; border-radius: 10px; margin-top: 5px;">
+			<h1 style="margin: auto; text-align: center;">Avaliações realizadas</h1>
+			
+			<h:form>
+			<p:growl id="growl" globalOnly="false" />
+				 <div class="ui-g ui-fluid">
+					<div class="ui-g-12">
+					
+					<div class="p-grid ui-fluid">	  
+						<div class="p-col-12 p-md-4">
+			                <div class="ui-inputgroup">
+			                    <p:inputText 
+			                    	id="itFiltro"
+			                    	value="#{perfilController.filtro}"
+			                    	placeholder="Filtro pelo título..."/>
+			                    <p:commandButton 
+			                    	actionListener="#{perfilController.pesquisarAvaliacao}"
+			                    	process="@this itFiltro"
+			                    	update="dtListagem"
+			                    	icon="pi pi-search" 
+			                    	styleClass="ui-button-warning"/>
+			                </div>
+			            </div>	
+			        </div>
+					
+						<div class="card card-w-title" >
+
+							<p:dataTable id="dtListagem" 
+								var="entity" rowIndexVar="row"
+								paginator="false"
+								reflow="true"
+								value="#{perfilController.listaAvaliacao}">	
+									
+								<p:column headerText="Título">
+									<h:outputText value="#{entity.midia.titulo}"/>
+								</p:column>	
+													
+								<p:column headerText="Comentário">
+									<h:outputText value="#{entity.comentario}"/>
+								</p:column>
+								
+								<p:column headerText="Nota">
+									<i class="pi pi-star-o" />
+									<h:outputText value="  #{entity.nota}"/>
+								</p:column>
+								
+								<f:facet name="footer">
+							        Total de #{perfilController.listaAvaliacao.size()} avaliações.
+							    </f:facet>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+		</h:form>
+		</div>
+		
+		<div style="
+		justify-content: space-between;
+		display: flex;
+		margin-top: 5px;
+		margin-bottom: 5px;
+		font-size: 20px;
+		">
+		
+			<div style="width: 49.2%; background-color: #bfbfbf; padding: 10px; border-radius: 10px; margin-top: 5px;">
+				<h1 style="margin: auto; text-align: center;">Seguidores</h1>
+				
+				<h:form>
+				<p:growl id="growl" globalOnly="false" />
+					 <div class="ui-g ui-fluid">
+						<div class="ui-g-12">
+						
+							<div class="card card-w-title" >
+	
+								<p:dataTable id="dtListagem" 
+									var="entity" rowIndexVar="row"
+									paginator="false"
+									reflow="true"
+									value="#{perfilController.entity.seguidores}">
+									
+									<p:column style="
+										background-image:url('/Series/img-usuario?nome=#{entity.id}.png');
+						        		background-size: cover;
+						        		background-position: center;
+						        		height: 100px;
+									"
+									rendered="#{entity.id != null}">
+									</p:column>
+										
+									<p:column headerText="Nome"
+									rendered="#{entity.id != null}">
+										<p:commandLink value="#{entity.nomeCompleto}"
+										actionListener="#{usuarioController.selecionarUsuario(entity)}"/>
+									</p:column>	
+									
+									<f:facet name="footer">
+								        Total de #{perfilController.entity.seguidores.size()} seguidores.
+								    </f:facet>
+								</p:dataTable>
+							</div>
+						</div>
+					</div>
+			</h:form>
+			</div>
+			
+			<div style="width: 49.2%; background-color: #bfbfbf; padding: 10px; border-radius: 10px; margin-top: 5px;">
+				<h1 style="margin: auto; text-align: center;">Seguindo</h1>
+				
+				<h:form>
+				<p:growl id="growl" globalOnly="false" />
+					 <div class="ui-g ui-fluid">
+						<div class="ui-g-12">
+						
+							<div class="card card-w-title" >
+	
+								<p:dataTable id="dtListagem" 
+									var="entity" rowIndexVar="row"
+									paginator="false"
+									reflow="true"
+									value="#{perfilController.entity.seguindo}">
+									
+									<p:column style="
+										background-image:url('/Series/img-usuario?nome=#{entity.id}.png');
+						        		background-size: cover;
+						        		background-position: center;
+						        		height: 100px;
+									"
+									rendered="#{entity.id != null}">
+									</p:column>
+										
+									<p:column headerText="Nome"
+									rendered="#{entity.id != null}">
+										<p:commandLink value="#{entity.nomeCompleto}"
+										actionListener="#{usuarioController.selecionarUsuario(entity)}"/>
+									</p:column>	
+									
+									<f:facet name="footer">
+								        Seguindo um total de #{perfilController.entity.seguindo.size()} usuários.
+								    </f:facet>
+								</p:dataTable>
+							</div>
+						</div>
+					</div>
+			</h:form>
+			</div>
+		</div>
+		
+		<div style="width: 100%; background-color: #bfbfbf; padding: 10px; border-radius: 10px; margin-top: 5px;">
+			<h1 style="margin: auto; text-align: center;">Séries favoritas</h1>
+			
+			<h:form>
+			<p:growl id="growl" globalOnly="false" />
+				 <div class="ui-g ui-fluid">
+					<div class="ui-g-12">
+					
+						<div class="card card-w-title" >
+
+							<p:dataTable id="dtListagem" 
+								var="entity" rowIndexVar="row"
+								paginator="false"
+								reflow="true"
+								value="#{perfilController.entity.seriesFavoritas}">
+								
+								<p:column style="
+									background-image:url('/Series/img-serie?nome=#{entity.id}.png');
+						        	background-size: cover;
+						        	background-position: center;
+						        	height: 100px;
+								"
+								rendered="#{entity.id != null}">
+								</p:column>
+									
+								<p:column headerText="Título"
+								rendered="#{entity.id != null}">
+									<p:commandLink value="#{entity.titulo}"
+									actionListener="#{serieController.selecionarSerie(entity)}"/>
+								</p:column>				
+								
+								<f:facet name="footer">
+							        Total de #{perfilController.entity.seriesFavoritas.size()} séries.
+							    </f:facet>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+		</h:form>
+		</div>
+		
+		<div style="width: 100%; background-color: #bfbfbf; padding: 10px; border-radius: 10px; margin-top: 5px;">
+			<h1 style="margin: auto; text-align: center;">Filmes favoritos</h1>
+			
+			<h:form>
+			<p:growl id="growl" globalOnly="false" />
+				 <div class="ui-g ui-fluid">
+					<div class="ui-g-12">
+					
+						<div class="card card-w-title" >
+
+							<p:dataTable id="dtListagem" 
+								var="entity" rowIndexVar="row"
+								paginator="false"
+								reflow="true"
+								value="#{perfilController.entity.filmesFavoritos}">
+								
+								<p:column style="
+									background-image:url('/Series/img-filme?nome=#{entity.id}.png');
+						        	background-size: cover;
+						        	background-position: center;
+						        	height: 100px;
+								"
+								rendered="#{entity.id != null}">
+								</p:column>
+									
+								<p:column headerText="Título"
+								rendered="#{entity.id != null}">
+									<p:commandLink value="#{entity.titulo}"
+									actionListener="#{filmeController.selecionarFilme(entity)}"/>
+								</p:column>				
+								
+								<f:facet name="footer">
+							        Total de #{perfilController.entity.filmesFavoritos.size()} filmes.
+							    </f:facet>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+		</h:form>
+		</div>
+
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+			responsive="true" width="350">
+			<p:commandButton value="Não" type="button"
+				styleClass="ui-confirmdialog-no ui-button-flat" />
+			<p:commandButton value="Sim" type="button"
+				styleClass="ui-confirmdialog-yes" />
+		</p:confirmDialog>
+
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			closable="false" resizable="false" showHeader="false">
+			<p:graphicImage name="/image/loader.gif" height="300" width="400" />
+		</p:dialog>
+	</ui:define>
+</ui:composition>
